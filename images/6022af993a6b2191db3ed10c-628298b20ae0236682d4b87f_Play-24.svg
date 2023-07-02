@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" fill="none" title="play">
+  <circle fill="#2e2e2e" cx="22" cy="22" r="22"/>
+  <g transform="translate(6,3) scale(1.57)">
+    <path d="M4 19.2902V4.70985C4 3.94502 4.82366 3.46331 5.49026 3.83827L18.4505 11.1284C19.1302 11.5107 19.1302 12.4893 18.4505 12.8716L5.49026 20.1617C4.82366 20.5367 4 20.055 4 19.2902Z" fill="white"/>
+  </g>
+</svg>
