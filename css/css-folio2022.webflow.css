@@ -610,7 +610,7 @@
 }
 
 .context-holder.loco._404 {
-  background-color: #e6e6e6;
+  background-color: #97caef ;
 }
 
 .case-study-content-tab {
@@ -1857,7 +1857,7 @@
 
 .sticky-section-header.loco.type2._404 {
   margin-left: 2vw;
-  background-color: #f2f9f8;
+  background-color: #97caef;
 }
 
 .empty-space-case-study {
@@ -2060,6 +2060,10 @@
 
 .hide-under.loco {
   background-color: #f2f8f9;
+}
+
+.hide-under.moco {
+  background-color: #97caef;
 }
 
 .awards {
@@ -4404,7 +4408,7 @@
 }
 
 .before-cs-top-space._404 {
-  background-color: #e6e6e6;
+  background-color: #97caef;
 }
 
 .before-cs-top-space.mobile {
