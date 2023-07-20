@@ -182,6 +182,15 @@
 <div class=time-holder>
 <div data-w-id=6fcb63d5-581e-f814-b043-d4ddf91a72fb class=circle></div>
 <div id=time-mobile class=time>00:00 AM</div>
+<script>
+    let time_mobile = document.getElementById("time");
+    setInterval(
+        () => {
+            let d = new Date();
+            time.innerHTML = d.toLocaleTimeString();
+        }
+        , 1000)
+</script>
 </div>
 </div>
 </div>
