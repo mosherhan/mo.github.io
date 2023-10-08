@@ -2678,7 +2678,7 @@
   background-color: #fff;
 }
 
-.testimonial-pic {
+.testimonial-gif {
   position: relative;
   z-index: 50;
   width: 8vw;
@@ -7084,15 +7084,7 @@
     flex: 0 0 auto;
 
   }
-.testimonial-pic {
-  background-image: "images/gifs/testimonial.webp";
-  width: 10vw;
-  height: 10vw;
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 0 auto;
-  -ms-flex: 0 0 auto;
-  flex: 0 0 auto;
-  }
+  
 
   .testimonial-preview {
     display: none;
