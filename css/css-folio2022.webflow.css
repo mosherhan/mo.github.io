@@ -1509,8 +1509,8 @@
   position: absolute;
   bottom: auto;
   z-index: 0;
-  margin-bottom: 0.5vh;
-  margin-left: -20vw;
+  margin-bottom: 13vh;
+  margin-left: -32vw;
   border-color: #fdfdfd;
   background-color: #131313;
   text-decoration: none;
@@ -1521,7 +1521,7 @@
   position: absolute;
   bottom: auto;
   z-index: 0;
-  margin-bottom: 15vh;
+  margin-bottom: 30vh;
   margin-left: -38.5vw;
   border-color: #fdfdfd;
   background-color: #131313;
@@ -1862,6 +1862,11 @@
 
 .empty-space-case-study {
   height: 1.35vh;
+  background-color: #f2f8f9;
+}
+
+.empty-space{
+  height: 2.35vh;
   background-color: #f2f8f9;
 }
 
