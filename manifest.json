@@ -1,0 +1,50 @@
+{
+	"dir": "ltr",
+	"lang": "en",
+	"name": "Portfolio 2025",
+	"short_name": "Mo'Site",
+	"scope": "/",
+	"display": "fullscreen",
+	"start_url": "https://mosherhan.life",
+	"background_color": "#ededed",
+  	"theme_color": "#131313",
+	"description": "UX Designer specializing in Visual Design making interfaces more human, effective, and easy to use.",
+	"orientation": "portrait",
+	"related_applications": [],
+	"categories": ["design", "coding", "ux", "portfolio"],
+	"prefer_related_applications": false,
+	"icons": [
+		{
+			"src": "",
+			"type": "image/png",
+			"sizes": "32x32"
+      },
+		{
+			"src": "",
+			"type": "image/png",
+			"sizes": "256x256"
+      },
+		{
+			"src": "",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any maskable"
+    }
+    ],
+	"shortcuts": [
+    {
+      "name": "Selected Works",
+      "short_name": "Works",
+      "description": "Check the Case studies of some of Sherhan's selected works.",
+      "url": "",
+      "icons": [{ "src": "", "sizes": "192x192" }]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "description": "Feel free to reach out to me via email if you have a project in mind, or maybe just say 'hi'. I don't mind making new friends.",
+      "url": "",
+      "icons": [{ "src": "", "sizes": "192x192" }]
+    }
+  ]
+}
