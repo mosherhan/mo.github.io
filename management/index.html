@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Management Dashboard</title>
+    <link rel="stylesheet" href="../css/css-folio2022.webflow.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Additional styles that complement the existing CSS */
+        .app-container {
+            width: 100%;
+            min-height: 100vh;
+            background-color: #f2f9f8;
+        }
+        
+        .auth-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .dashboard-container {
+            display: none;
+            padding: 20px;
+        }
+        
+        .section-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .nav-tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            border-bottom: 2px solid #131313;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-family: 'Neue Montreal', Arial, sans-serif;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background-color: #131313;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Neue Montreal', Arial, sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #333;
+        }
+        
+        .progress-container {
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #131313;
+            transition: width 0.3s ease;
+        }
+        
+        .card {
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #131313;
+            color: #fff;
+        }
+        
+        .last-updated {
+            font-size: 12px;
+            color: #777;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="body">
+    <div class="app-container">
+        <!-- Authentication Section -->
+        <div id="auth-container" class="auth-container">
+            <h1 class="heading1">Personal Management</h1>
+            
+            <!-- Login Form -->
+            <div id="login-form" class="section-container">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <input type="email" id="login-email" class="form-control" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-password" class="form-control" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <button id="login-button" class="btn">Login</button>
+                </div>
+                <p>Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+            </div>
+            
+            <!-- Signup Form -->
+            <div id="signup-form" class="section-container" style="display: none;">
+                <h2>Sign Up</h2>
+                <div class="form-group">
+                    <input type="text" id="signup-name" class="form-control" placeholder="Full Name">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="signup-email" class="form-control" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signup-password" class="form-control" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <button id="signup-button" class="btn">Sign Up</button>
+                </div>
+                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+            </div>
+        </div>
+        
+        <!-- Dashboard Section -->
+        <div id="dashboard-container" class="dashboard-container">
+            <!-- Header Bar -->
+            <div class="header-bar">
+                <h2>Welcome, <span id="user-name">User</span></h2>
+                <button id="logout-button" class="btn">Logout</button>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <div class="nav-tabs">
+                <div class="nav-tab active" data-tab="finance">💰 Finance</div>
+                <div class="nav-tab" data-tab="calisthenics">💪 Calisthenics</div>
+                <div class="nav-tab" data-tab="study">📚 Study</div>
+            </div>
+            
+            <!-- Finance Section -->
+            <div id="finance-section" class="tab-content active">
+                <div class="section-container">
+                    <h2>Financial Goals</h2>
+                    <div class="form-group">
+                        <h3>Add New Goal</h3>
+                        <input type="text" id="finance-goal-name" class="form-control" placeholder="Goal Name">
+                        <input type="number" id="finance-goal-amount" class="form-control" placeholder="Target Amount">
+                        <select id="finance-goal-type" class="form-control">
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                            <option value="savings">Savings</option>
+                        </select>
+                        <button id="add-finance-goal" class="btn">Add Goal</button>
+                    </div>
+                    
+                    <div id="finance-goals-list">
+                        <!-- Goals will be populated here -->
+                    </div>
+                    
+                    <div class="last-updated">Last updated: <span id="finance-last-updated">Never</span></div>
+                </div>
+                
+                <div class="section-container">
+                    <h2>Transactions</h2>
+                    <div class="form-group">
+                        <h3>Add Transaction</h3>
+                        <input type="text" id="transaction-name" class="form-control" placeholder="Description">
+                        <input type="number" id="transaction-amount" class="form-control" placeholder="Amount">
+                        <select id="transaction-type" class="form-control">
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                        <button id="add-transaction" class="btn">Add Transaction</button>
+                    </div>
+                    
+                    <div id="transactions-list">
+                        <!-- Transactions will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calisthenics Section -->
+            <div id="calisthenics-section" class="tab-content">
+                <div class="section-container">
+                    <h2>Calisthenics Tracker</h2>
+                    <div class="form-group">
+                        <h3>Log Workout</h3>
+                        <input type="date" id="workout-date" class="form-control">
+                        <select id="workout-skill" class="form-control">
+                            <option value="planche">Planche</option>
+                            <option value="handstand">Handstand</option>
+                            <option value="muscle-up">Muscle-up</option>
+                            <option value="front-lever">Front Lever</option>
+                            <option value="back-lever">Back Lever</option>
+                            <option value="human-flag">Human Flag</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <input type="text" id="workout-sets-reps" class="form-control" placeholder="Sets x Reps (e.g., 3x8)">
+                        <textarea id="workout-notes" class="form-control" placeholder="Notes"></textarea>
+                        <button id="add-workout" class="btn">Log Workout</button>
+                    </div>
+                    
+                    <div id="workout-logs-list">
+                        <!-- Workout logs will be populated here -->
+                    </div>
+                    
+                    <div class="last-updated">Last updated: <span id="calisthenics-last-updated">Never</span></div>
+                </div>
+                
+                <div class="section-container">
+                    <h2>Progress Tracking</h2>
+                    <select id="progress-skill" class="form-control">
+                        <option value="planche">Planche</option>
+                        <option value="handstand">Handstand</option>
+                        <option value="muscle-up">Muscle-up</option>
+                        <option value="front-lever">Front Lever</option>
+                        <option value="back-lever">Back Lever</option>
+                        <option value="human-flag">Human Flag</option>
+                    </select>
+                    <div class="chart-container" style="position: relative; height:300px; width:100%">
+                        <canvas id="progress-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Study Section -->
+            <div id="study-section" class="tab-content">
+                <div class="section-container">
+                    <h2>Study Tracker</h2>
+                    <div class="form-group">
+                        <h3>Add Subject</h3>
+                        <input type="text" id="subject-name" class="form-control" placeholder="Subject Name">
+                        <button id="add-subject" class="btn">Add Subject</button>
+                    </div>
+                    
+                    <div id="subjects-list">
+                        <!-- Subjects will be populated here -->
+                    </div>
+                    
+                    <div class="last-updated">Last updated: <span id="study-last-updated">Never</span></div>
+                </div>
+                
+                <div class="section-container">
+                    <h2>Daily Study Log</h2>
+                    <div class="form-group">
+                        <h3>Log Study Session</h3>
+                        <input type="date" id="study-date" class="form-control">
+                        <select id="study-subject" class="form-control">
+                            <!-- Subjects will be populated here -->
+                        </select>
+                        <input type="number" id="study-minutes" class="form-control" placeholder="Minutes Studied">
+                        <input type="range" id="focus-score" class="form-control" min="1" max="10" value="5">
+                        <div>Focus Score: <span id="focus-score-value">5</span>/10</div>
+                        <textarea id="study-notes" class="form-control" placeholder="Notes"></textarea>
+                        <button id="add-study-session" class="btn">Log Session</button>
+                    </div>
+                    
+                    <div id="study-logs-list">
+                        <!-- Study logs will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="section-container">
+                    <h2>Weekly Summary</h2>
+                    <div class="chart-container" style="position: relative; height:300px; width:100%">
+                        <canvas id="study-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/finance.js"></script>
+    <script src="js/calisthenics.js"></script>
+    <script src="js/study.js"></script>
+</body>
+</html>
