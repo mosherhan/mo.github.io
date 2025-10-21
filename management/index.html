@@ -253,6 +253,71 @@
             box-shadow: var(--box-shadow);
         }
         
+        /* Enhanced form styling */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin: 8px 0;
+        }
+        
+        .focus-score-container {
+            margin: 16px 0;
+        }
+        
+        .focus-score-display {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+        
+        /* Enhanced button styling */
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--light-gray);
+            transform: translateY(-1px);
+        }
+        
+        /* List item styling */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            margin-bottom: 12px;
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+        
+        .list-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .list-item-content {
+            flex: 1;
+        }
+        
+        .list-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .data-grid {
@@ -265,6 +330,17 @@
             
             h1 {
                 font-size: 2rem;
+            }
+            
+            .list-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .list-item-actions {
+                width: 100%;
+                justify-content: flex-end;
             }
         }
     </style>
@@ -432,10 +508,13 @@
             <!-- Study Section -->
             <div id="study-section" class="tab-content">
                 <div class="section-container">
-                    <h2>Study Tracker</h2>
+                    <div class="module-header">
+                        <h2>Subjects Management</h2>
+                    </div>
                     <div class="form-group">
-                        <h3>Add Subject</h3>
-                        <input type="text" id="subject-name" class="form-control" placeholder="Subject Name">
+                        <h3>Add New Subject</h3>
+                        <input type="text" id="subject-name" class="form-control" placeholder="Subject name (e.g., Mathematics)">
+                        <input type="number" id="subject-goal" class="form-control" placeholder="Weekly goal (minutes)">
                         <button id="add-subject" class="btn">Add Subject</button>
                     </div>
                     
@@ -447,22 +526,33 @@
                 </div>
                 
                 <div class="section-container">
-                    <h2>Daily Study Log</h2>
+                    <div class="module-header">
+                        <h2>Log Study Session</h2>
+                    </div>
                     <div class="form-group">
-                        <h3>Log Study Session</h3>
-                        <input type="date" id="study-date" class="form-control">
-                        <select id="study-subject" class="form-control">
-                            <!-- Subjects will be populated here -->
+                        <select id="session-subject" class="form-control">
+                            <option value="">Select a subject</option>
                         </select>
-                        <input type="number" id="study-minutes" class="form-control" placeholder="Minutes Studied">
-                        <input type="range" id="focus-score" class="form-control" min="1" max="10" value="5">
-                        <div>Focus Score: <span id="focus-score-value">5</span>/10</div>
-                        <textarea id="study-notes" class="form-control" placeholder="Notes"></textarea>
+                        <input type="number" id="session-duration" class="form-control" placeholder="Duration (minutes)">
+                        <div class="form-group">
+                            <label for="session-focus">Focus Score: <span id="focus-score-display">5</span>/10</label>
+                            <input type="range" id="session-focus" class="form-control" min="1" max="10" value="5">
+                        </div>
+                        <textarea id="session-notes" class="form-control" placeholder="Session notes (optional)"></textarea>
                         <button id="add-study-session" class="btn">Log Session</button>
                     </div>
                     
-                    <div id="study-logs-list">
-                        <!-- Study logs will be populated here -->
+                    <div id="study-sessions-list">
+                        <!-- Study sessions will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="section-container">
+                    <div class="module-header">
+                        <h2>Weekly Summary</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="weekly-summary-chart"></canvas>
                     </div>
                 </div>
                 
