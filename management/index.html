@@ -369,21 +369,38 @@
             <!-- Calisthenics Section -->
             <div id="calisthenics-section" class="tab-content">
                 <div class="section-container">
-                    <h2>Calisthenics Tracker</h2>
+                    <div class="module-header">
+                        <h2>Skills Management</h2>
+                    </div>
                     <div class="form-group">
-                        <h3>Log Workout</h3>
-                        <input type="date" id="workout-date" class="form-control">
-                        <select id="workout-skill" class="form-control">
-                            <option value="planche">Planche</option>
-                            <option value="handstand">Handstand</option>
-                            <option value="muscle-up">Muscle-up</option>
-                            <option value="front-lever">Front Lever</option>
-                            <option value="back-lever">Back Lever</option>
-                            <option value="human-flag">Human Flag</option>
-                            <option value="other">Other</option>
+                        <h3>Add New Skill</h3>
+                        <input type="text" id="skill-name" class="form-control" placeholder="Skill name (e.g., Planche)">
+                        <select id="skill-category" class="form-control">
+                            <option value="push">Push</option>
+                            <option value="pull">Pull</option>
+                            <option value="core">Core</option>
+                            <option value="legs">Legs</option>
+                            <option value="balance">Balance</option>
                         </select>
-                        <input type="text" id="workout-sets-reps" class="form-control" placeholder="Sets x Reps (e.g., 3x8)">
-                        <textarea id="workout-notes" class="form-control" placeholder="Notes"></textarea>
+                        <button id="add-skill" class="btn">Add Skill</button>
+                    </div>
+                    
+                    <div id="skills-list">
+                        <!-- Skills will be populated here -->
+                    </div>
+                </div>
+
+                <div class="section-container">
+                    <div class="module-header">
+                        <h2>Log Workout</h2>
+                    </div>
+                    <div class="form-group">
+                        <select id="workout-skill" class="form-control">
+                            <option value="">Select a skill</option>
+                        </select>
+                        <input type="number" id="workout-sets" class="form-control" placeholder="Number of sets">
+                        <input type="number" id="workout-reps" class="form-control" placeholder="Reps per set">
+                        <textarea id="workout-notes" class="form-control" placeholder="Notes (optional)"></textarea>
                         <button id="add-workout" class="btn">Log Workout</button>
                     </div>
                     
@@ -395,9 +412,11 @@
                 </div>
                 
                 <div class="section-container">
-                    <h2>Progress Tracking</h2>
+                    <div class="module-header">
+                        <h2>Progress Tracking</h2>
+                    </div>
                     <select id="progress-skill" class="form-control">
-                        <option value="planche">Planche</option>
+                        <option value="">Select skill to view progress</option>
                         <option value="handstand">Handstand</option>
                         <option value="muscle-up">Muscle-up</option>
                         <option value="front-lever">Front Lever</option>
