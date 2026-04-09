@@ -1,4 +1,4 @@
-# mosherhan.life – Personal Website
+# sherhan.site – Personal Website
 
 This repository contains the source for **mosherhan.life**, the personal website and portfolio of Mohammed Sherhan.  
 The site is designed to reflect my journey, projects, and professional outlook in a clean and minimal style.
