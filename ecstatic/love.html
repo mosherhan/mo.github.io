@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>for you &mdash; shenaz</title>
+    <meta content="A love letter, rendered in code. For the one person who makes the universe make sense." name="description">
+    <meta content="for you — shenaz" property="og:title">
+    <meta content="A love letter, rendered in code." property="og:description">
+    <meta content="thumbnail.png" property="og:image">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta name="theme-color" content="#0a0a0a">
+    <link href="../css/normalize.css" rel="stylesheet">
+    <style>
+        /* ═══════ FONTS ═══════ */
+        @font-face{font-family:'Neue Montreal';src:url('../fonts/NeueMontreal-Regular.otf') format('opentype');font-weight:400;font-display:swap}
+        @font-face{font-family:'Neue Montreal';src:url('../fonts/NeueMontreal-Medium.otf') format('opentype');font-weight:500;font-display:swap}
+        @font-face{font-family:'Neue Montreal';src:url('../fonts/NeueMontreal-Italic.otf') format('opentype');font-weight:400;font-style:italic;font-display:swap}
+        @font-face{font-family:'Editorial New';src:url('../fonts/PPEditorialNew-Regular.otf') format('opentype');font-weight:400;font-display:swap}
+        @font-face{font-family:'Editorial New';src:url('../fonts/PPEditorialNew-Italic.otf') format('opentype');font-weight:400;font-style:italic;font-display:swap}
+        @font-face{font-family:'Editorial New';src:url('../fonts/PPEditorialNew-Ultralight.otf') format('opentype');font-weight:200;font-display:swap}
+        @font-face{font-family:'Editorial New';src:url('../fonts/PPEditorialNew-UltralightItalic.otf') format('opentype');font-weight:200;font-style:italic;font-display:swap}
+
+        /* ═══════ RESET ═══════ */
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar-track{background:#0a0a0a}
+        ::-webkit-scrollbar-thumb{background:#1a1a1a;border-radius:4px}
+        html{overflow-x:hidden}
+        body{font-family:'Neue Montreal',Arial,sans-serif;background:#0a0a0a;color:#e8e8e8;line-height:1;font-weight:400;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+        ::selection{background:#e8e8e8;color:#0a0a0a}
+
+        /* ═══════ SCROLL GATE ═══════ */
+        body.locked{overflow:hidden}
+
+        /* ═══════ CURSOR GLOW ═══════ */
+        .cursor-glow{position:fixed;width:280px;height:280px;border-radius:50%;pointer-events:none;z-index:9998;background:radial-gradient(circle,rgba(255,255,255,.035) 0%,transparent 70%);transform:translate(-50%,-50%);transition:opacity .3s}
+
+        /* ═══════ LOADER ═══════ */
+        .loader{position:fixed;inset:0;background:#0a0a0a;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease,visibility .8s}
+        .loader.done{opacity:0;visibility:hidden;pointer-events:none}
+        .loader-txt{font-size:.85rem;letter-spacing:.25em;opacity:.35}
+        .loader-bar{width:180px;height:2px;background:#151515;border-radius:2px;overflow:hidden;margin-top:1.5rem}
+        .loader-fill{width:0%;height:100%;background:#e8e8e8;transition:width .08s linear}
+
+        /* ═══════ NAV ═══════ */
+        .nav{position:fixed;top:0;left:0;width:100%;display:flex;align-items:center;justify-content:space-between;padding:1.6vh 2vw;z-index:600;mix-blend-mode:difference;opacity:0;transition:opacity 1s ease}
+        .nav.show{opacity:1}
+        .nav span,.nav a{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:#f0f0f0;cursor:pointer;transition:opacity .3s;text-decoration:none}
+        .nav span:hover,.nav a:hover{opacity:.4}
+        .nav-r{display:flex;align-items:center;gap:2.2vw}
+
+        /* ═══════ PROGRESS BAR (top) ═══════ */
+        .progress-bar{position:fixed;top:0;left:0;height:2px;background:#e8e8e8;z-index:700;transition:width .6s cubic-bezier(.16,1,.3,1);width:0%}
+
+        /* ═══════ FLOATING HEARTS ═══════ */
+        #hearts-canvas{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.35}
+
+        /* ═══════ CONFETTI ═══════ */
+        #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:8500}
+
+        /* ═══════ CHAPTER SECTIONS ═══════ */
+        .chapter{width:100vw;position:relative;overflow:hidden;max-height:0;opacity:0;transition:max-height 0s,opacity .8s ease;pointer-events:none}
+        .chapter.open{max-height:none;opacity:1;pointer-events:auto}
+        .chapter.open .ch-inner{transform:translateY(0);opacity:1}
+        .ch-inner{padding:14vh 2.5vw 10vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:80vh;transition:transform 1s cubic-bezier(.16,1,.3,1) .2s,opacity .8s ease .2s;transform:translateY(60px);opacity:0}
+
+        /* ═══════ BACKGROUNDS ═══════ */
+        .bg-dark{background:#0a0a0a;color:#e8e8e8}
+        .bg-light{background:#f2f9f8;color:#131313}
+        .bg-deep{background:linear-gradient(180deg,#0e1520 0%,#0a0a0a 100%);color:#e8e8e8}
+
+        /* ═══════ TYPOGRAPHY ═══════ */
+        .ch-label{font-size:.68rem;font-weight:500;text-transform:uppercase;letter-spacing:.2em;opacity:.25;margin-bottom:5vh;text-align:center}
+        .ch-heading{font-family:'Editorial New',serif;font-weight:200;font-style:italic;font-size:clamp(2.2rem,5vw,5.5rem);line-height:1.12;letter-spacing:-.02em;max-width:65vw;margin-left:auto;margin-right:auto;margin-bottom:5vh;text-align:center}
+        .ch-body{font-family:'Editorial New',serif;font-weight:200;font-size:clamp(1rem,1.4vw,1.25rem);line-height:2;max-width:550px;margin-left:auto;margin-right:auto;opacity:.65;margin-bottom:5vh;text-align:center}
+        .ch-body p{margin-bottom:1.8em}
+        .ch-body .pause{display:block;height:2em}
+
+        /* Hero specific */
+        .hero-sec{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .hero-sec .ch-heading{max-width:70vw;font-size:clamp(2.8rem,7vw,8rem);margin-bottom:3vh}
+        .hero-sec .ch-body{max-width:500px;text-align:center}
+        .hero-pre{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;opacity:.2;margin-bottom:3vh}
+
+        /* ═══════ MARQUEE ═══════ */
+        .mqband{overflow:hidden;padding:4.5vh 0;border-top:1px solid rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.03)}
+        .mqband.lt-brd{border-color:rgba(0,0,0,.05)}
+        .mqtrack{display:flex;white-space:nowrap;will-change:transform}
+        .mqtxt{font-family:'Editorial New',serif;font-weight:200;font-style:italic;font-size:6.5vw;line-height:1;padding-right:4vw;flex-shrink:0;opacity:.08}
+        .bg-light .mqtxt{color:#131313}
+
+        /* ═══════ KEEP GOING BUTTON ═══════ */
+        .keep-btn{display:inline-flex;align-items:center;gap:1em;padding:1.3em 2.6em;font-family:'Neue Montreal',sans-serif;font-size:.82rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .5s cubic-bezier(.16,1,.3,1);margin:3vh auto 0;position:relative;overflow:hidden}
+        .keep-btn.light{background:#e8e8e8;color:#0a0a0a}
+        .keep-btn.dark{background:#131313;color:#f2f9f8}
+        .keep-btn .arr{transition:transform .4s cubic-bezier(.16,1,.3,1)}
+        .keep-btn:hover{letter-spacing:.18em;padding-right:3.2em}
+        .keep-btn:hover .arr{transform:translateX(6px)}
+
+        /* ═══════ LETTER ═══════ */
+        .letter-card{max-width:650px;margin:4vh auto 0;background:linear-gradient(135deg,#faf8f5,#f0ece4);color:#2a2020;border-radius:3px;padding:45px 38px;box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative;text-align:left}
+        .letter-card::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;border-radius:3px}
+        .lt-date{font-size:.68rem;letter-spacing:.12em;opacity:.25;text-transform:uppercase;margin-bottom:3vh;font-weight:500}
+        .lt-greet{font-family:'Editorial New',serif;font-weight:400;font-style:italic;font-size:1.6rem;margin-bottom:2vh;color:#3a1c1c}
+        .lt-body{font-family:'Editorial New',serif;font-weight:200;font-size:1.1rem;line-height:2;color:#2a2020;min-height:200px}
+        .lt-sign{font-family:'Editorial New',serif;font-weight:400;font-style:italic;font-size:1.15rem;text-align:right;margin-top:4vh;opacity:0;transition:opacity 1s ease}
+        .lt-sign.show{opacity:1}
+
+        /* ═══════ SEAL ═══════ */
+        .seal{display:inline-flex;width:70px;height:70px;border-radius:50%;background:#e8e8e8;color:#0a0a0a;align-items:center;justify-content:center;font-size:1.8rem;cursor:pointer;transition:all .5s cubic-bezier(.16,1,.3,1)}
+        .seal:hover{transform:scale(1.1) rotate(8deg);box-shadow:0 12px 40px rgba(255,255,255,.15)}
+        .seal-hint{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;opacity:.2;margin-top:1.5vh;animation:sealP 2s infinite}
+        @keyframes sealP{0%,100%{opacity:.15}50%{opacity:.35}}
+
+        /* ═══════ HEART REVEAL ═══════ */
+        .heart-area{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;padding:6vh 0}
+        .big-heart{width:clamp(120px,18vw,220px);height:clamp(120px,18vw,220px);fill:#e8e8e8;animation:hPump 1.3s infinite ease-in-out;filter:drop-shadow(0 0 35px rgba(255,255,255,.12));cursor:pointer}
+        @keyframes hPump{0%{transform:scale(1)}14%{transform:scale(1.12)}28%{transform:scale(1)}42%{transform:scale(1.08)}70%{transform:scale(1)}}
+        .h-ring{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.08);animation:hRing 3s infinite ease-out;left:50%;top:50%;transform:translate(-50%,-50%)}
+        .h-ring:nth-child(1){width:180px;height:180px}.h-ring:nth-child(2){width:260px;height:260px;animation-delay:.7s}.h-ring:nth-child(3){width:340px;height:340px;animation-delay:1.4s}
+        @keyframes hRing{0%{transform:translate(-50%,-50%) scale(.6);opacity:.5}100%{transform:translate(-50%,-50%) scale(1.3);opacity:0}}
+
+        /* ═══════ PROPOSAL ═══════ */
+        .proposal-sec{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+        .p-question{font-family:'Editorial New',serif;font-weight:200;font-style:italic;font-size:clamp(2.5rem,6vw,7rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:3vh}
+        .p-sub{font-size:.9rem;line-height:1.7;opacity:.45;max-width:450px;margin-bottom:5vh;margin-left:auto;margin-right:auto;text-align:center}
+        .p-btns{display:flex;gap:1.8rem;flex-wrap:wrap;justify-content:center}
+        .p-btn{padding:1.3em 3em;font-family:'Neue Montreal',sans-serif;font-size:.88rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .4s cubic-bezier(.16,1,.3,1)}
+        .p-yes{background:#e8e8e8;color:#0a0a0a}
+        .p-yes:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 15px 40px rgba(255,255,255,.2)}
+        .p-think{background:transparent;color:#e8e8e8;border:1px solid rgba(255,255,255,.15)}
+        .p-think:hover{border-color:#e8e8e8}
+
+        /* ═══════ CELEBRATION ═══════ */
+        .celeb{position:fixed;inset:0;background:rgba(10,10,10,.96);z-index:8000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4vw;opacity:0;pointer-events:none;transition:opacity .6s}
+        .celeb.active{opacity:1;pointer-events:auto}
+        .celeb-icon{font-size:4rem;margin-bottom:2rem;animation:hPump 1s infinite}
+        .celeb-title{font-family:'Editorial New',serif;font-weight:200;font-style:italic;font-size:clamp(1.8rem,4vw,3.8rem);line-height:1.3;margin-bottom:1.5rem;max-width:600px}
+        .celeb-sub{font-size:.9rem;line-height:1.7;opacity:.4;max-width:450px;margin-bottom:2rem}
+        .celeb-counter{margin-top:2rem}
+        .celeb-counter .c-label{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;opacity:.25;margin-bottom:1rem}
+        .celeb-counter .c-num{font-size:clamp(3rem,8vw,7rem);font-weight:500;letter-spacing:-.04em}
+        .celeb-counter .c-unit{font-family:'Editorial New',serif;font-weight:200;font-style:italic;font-size:1.1rem;opacity:.35;margin-top:.5rem}
+        .celeb-close{margin-top:2.5rem;background:none;border:1px solid rgba(255,255,255,.12);color:#e8e8e8;padding:.8em 2em;font-family:inherit;font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .3s}
+        .celeb-close:hover{background:#e8e8e8;color:#0a0a0a}
+
+        /* ═══════ BUCKET LIST ═══════ */
+        .bucket-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2vw;margin:4vh auto;max-width:700px;width:100%}
+        .b-item{display:flex;align-items:flex-start;gap:14px;padding:1.8vh 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:all .3s}
+        .b-item:hover{padding-left:.5vw}
+        .b-chk{width:18px;height:18px;border:1.5px solid rgba(255,255,255,.12);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:.65rem}
+        .b-item.done .b-chk{background:#e8e8e8;border-color:#e8e8e8;color:#0a0a0a}
+        .b-txt{font-size:.88rem;line-height:1.5;opacity:.55;transition:opacity .3s;text-align:left}
+        .b-item.done .b-txt{opacity:.2;text-decoration:line-through}
+        .bucket-outro{font-family:'Editorial New',serif;font-weight:200;font-style:italic;font-size:1.1rem;line-height:1.8;opacity:.35;margin:4vh auto 0;max-width:400px;text-align:center}
+
+        /* ═══════ FOOTER ═══════ */
+        .footer{padding:6vh 2.5vw;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2vh;border-top:1px solid rgba(255,255,255,.03);width:100%}
+        .footer-l{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;opacity:.25;text-align:center}
+        .footer-r{font-family:'Editorial New',serif;font-style:italic;font-size:clamp(.85rem,1.2vw,1.05rem);line-height:1.7;opacity:.4;text-align:center;max-width:550px;margin:0 auto}
+
+        /* ═══════ RESPONSIVE ═══════ */
+        @media(max-width:768px){
+            .cursor-glow{display:none}
+            .ch-heading{max-width:90vw}.ch-body{max-width:90vw}
+            .hero-sec .ch-heading{max-width:90vw}
+            .letter-card{padding:28px 20px;margin:2vh 3vw 0}
+            .p-btns{flex-direction:column;width:80%;gap:1rem}
+            .p-btn{width:100%}
+            .bucket-grid{grid-template-columns:1fr}
+            .footer{flex-direction:column;gap:1.8vh;align-items:center;text-align:center}
+            .nav-r{gap:4vw}
+        }
+    </style>
+</head>
+<body class="locked">
+
+<div class="cursor-glow" id="cGlow"></div>
+<canvas id="hearts-canvas"></canvas>
+<canvas id="confetti-canvas"></canvas>
+
+<!-- Progress -->
+<div class="progress-bar" id="progBar"></div>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+    <div class="loader-txt">idk..hope you like this</div>
+    <div class="loader-bar"><div class="loader-fill" id="loadFill"></div></div>
+</div>
+
+<!-- Nav -->
+<nav class="nav" id="nav">
+    <a href="../index.htm">for you my love</a>
+    <div class="nav-r">
+        <span id="navChapter">chapter 1 / 9</span>
+    </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     CHAPTER 0: HERO
+═══════════════════════════════════════════ -->
+<section class="chapter bg-dark open" data-step="0" id="ch0">
+    <div class="ch-inner hero-sec">
+        <div class="hero-pre">a confession, rendered in code</div>
+        <h1 class="ch-heading">I Made Something...</h1>
+        <div class="ch-body" style="text-align:center">
+            <p>Not because I had to.</p>
+            <p>Because there were some things my heart has been wanting to tell you for a long time.</p>
+            <p style="opacity:.3">Scroll slowly.<br>This is our story.</p>
+        </div>
+        <button class="keep-btn light" onclick="nextStep()"><span>begin</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- ═══════ CH 1 ═══════ -->
+<section class="chapter bg-dark" data-step="1" id="ch1">
+    <div class="ch-inner">
+        <div class="ch-label">chapter 1</div>
+        <h2 class="ch-heading">We Were Just Two Classmates.</h2>
+        <div class="ch-body">
+            <p>It's funny.</p>
+            <p>We were in the same college. The same campus. The same classrooms.</p>
+            <p>Probably crossed paths more times than we even realized.</p>
+            <p>Yet...</p>
+            <p>We never really got the chance to know each other.</p>
+            <p>Life had its own plans. Assignments. Friends. Different routines.</p>
+            <p>We stayed strangers with familiar faces.</p>
+        </div>
+        <button class="keep-btn light" onclick="nextStep()"><span>keep going</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- Marquee -->
+<section class="chapter bg-dark mqband" data-step="1.5" style="max-height:0;opacity:0">
+    <div class="mqtrack" id="mq1"><span class="mqtxt">maybe timing matters &mdash;</span><span class="mqtxt">maybe timing matters &mdash;</span><span class="mqtxt">maybe timing matters &mdash;</span><span class="mqtxt">maybe timing matters &mdash;</span><span class="mqtxt">maybe timing matters &mdash;</span><span class="mqtxt">maybe timing matters &mdash;</span></div>
+</section>
+
+<!-- ═══════ CH 2 ═══════ -->
+<section class="chapter bg-deep" data-step="2" id="ch2">
+    <div class="ch-inner">
+        <div class="ch-label">chapter 2</div>
+        <h2 class="ch-heading">Maybe Timing Matters More Than Distance.</h2>
+        <div class="ch-body">
+            <p>College ended. Everyone went in different directions.</p>
+            <p>I never imagined that the person I'd think about every single day would be someone I barely spoke to back then.</p>
+            <p>Yet somehow...</p>
+            <p>Life found its own way of bringing us back.</p>
+        </div>
+        <button class="keep-btn light" onclick="nextStep()"><span>keep going</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- ═══════ CH 3 ═══════ -->
+<section class="chapter bg-dark" data-step="3" id="ch3">
+    <div class="ch-inner">
+        <div class="ch-label">chapter 3</div>
+        <h2 class="ch-heading">It Started With Something So Small.</h2>
+        <div class="ch-body">
+            <p>No grand beginning. No movie moment.</p>
+            <p>Just Instagram.</p>
+            <p>A meme. Another meme. A random conversation. Then another.</p>
+            <p>Days slowly became conversations.</p>
+            <p>Conversations slowly became habits.</p>
+            <p>And before I even noticed...</p>
+            <p>You became part of my everyday life.</p>
+        </div>
+        <button class="keep-btn light" onclick="nextStep()"><span>keep going</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- Marquee -->
+<section class="chapter bg-light mqband lt-brd" data-step="3.5" style="max-height:0;opacity:0">
+    <div class="mqtrack" id="mq2"><span class="mqtxt">surprisingly similar &bull;</span><span class="mqtxt">surprisingly similar &bull;</span><span class="mqtxt">surprisingly similar &bull;</span><span class="mqtxt">surprisingly similar &bull;</span><span class="mqtxt">surprisingly similar &bull;</span><span class="mqtxt">surprisingly similar &bull;</span></div>
+</section>
+
+<!-- ═══════ CH 4 ═══════ -->
+<section class="chapter bg-light" data-step="4" id="ch4">
+    <div class="ch-inner">
+        <div class="ch-label" style="color:#131313">chapter 4</div>
+        <h2 class="ch-heading" style="color:#131313">The Funny Part...</h2>
+        <div class="ch-body" style="color:#131313">
+            <p>People say opposites attract.</p>
+            <p>But somehow... we were surprisingly similar.</p>
+            <p>The same thoughts. The same humor. The same way of caring. The same random energy. The same silence that never felt awkward.</p>
+            <p>It felt strange...</p>
+            <p>Like finding someone who somehow understood parts of me I never explained.</p>
+        </div>
+        <button class="keep-btn dark" onclick="nextStep()"><span>keep going</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- ═══════ CH 5 ═══════ -->
+<section class="chapter bg-dark" data-step="5" id="ch5">
+    <div class="ch-inner">
+        <div class="ch-label">chapter 5</div>
+        <h2 class="ch-heading">Home Isn't Always A Place.</h2>
+        <div class="ch-body">
+            <p>I've met many people. Talked to many.</p>
+            <p>But very few ever made me feel... <em>safe.</em></p>
+            <p>With you... there was never pressure to pretend. Never a fear of being judged. Never a need to become someone else.</p>
+            <p>I could simply be myself.</p>
+            <p>And honestly... that feeling is rare. Very rare.</p>
+        </div>
+        <button class="keep-btn light" onclick="nextStep()"><span>keep going</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- ═══════ CH 6 ═══════ -->
+<section class="chapter bg-deep" data-step="6" id="ch6">
+    <div class="ch-inner">
+        <div class="ch-label">chapter 6</div>
+        <h2 class="ch-heading">We Were Miles Apart...<br><span style="opacity:.4;font-size:.7em">But Somehow Closer Than Most People Ever Are.</span></h2>
+        <div class="ch-body">
+            <p>We never really met after college. No caf&eacute;s. No late evening drives. No surprise visits.</p>
+            <p>Yet... every single day... we were there.</p>
+            <p>Sharing our day. Sharing memes. Sharing laughs. Sharing little moments.</p>
+            <p>Somehow... distance never stopped us from becoming close.</p>
+        </div>
+        <button class="keep-btn light" onclick="nextStep()"><span>keep going</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- Marquee -->
+<section class="chapter bg-dark mqband" data-step="6.5" style="max-height:0;opacity:0">
+    <div class="mqtrack" id="mq3"><span class="mqtxt">somewhere along the way &mdash;</span><span class="mqtxt">somewhere along the way &mdash;</span><span class="mqtxt">somewhere along the way &mdash;</span><span class="mqtxt">somewhere along the way &mdash;</span><span class="mqtxt">somewhere along the way &mdash;</span></div>
+</section>
+
+<!-- ═══════ CH 7 ═══════ -->
+<section class="chapter bg-dark" data-step="7" id="ch7">
+    <div class="ch-inner">
+        <div class="ch-label">chapter 7</div>
+        <h2 class="ch-heading">Somewhere Along The Way... It Happened.</h2>
+        <div class="ch-body">
+            <p>I don't know exactly when.</p>
+            <p>There wasn't one specific moment. It wasn't one conversation. Or idk anything ig.</p>
+            <p>It was everything. Every little moment added together.</p>
+            <p>Until one day... I realized...</p>
+            <p>I look forward to hearing from you more than anything else.</p>
+        </div>
+        <button class="keep-btn light" onclick="nextStep()"><span>keep going</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- ═══════ CH 8 ═══════ -->
+<section class="chapter bg-dark" data-step="8" id="ch8">
+    <div class="ch-inner">
+        <div class="ch-label">chapter 8</div>
+        <h2 class="ch-heading">My Favorite Part Of Every Day.</h2>
+        <div class="ch-body">
+            <p>Every morning... one of my first thoughts is you.</p>
+            <p>Every night... one of my last thoughts is still you.</p>
+            <p>Somehow you've become part of my routine... without ever trying. Without even asking.</p>
+            <p>You simply became...</p>
+            <p>My favorite notification.<br>My favorite conversation.<br>My favorite person to tell random things to.</p>
+            <p>And honestly... my favorite part of the day.</p>
+        </div>
+        <button class="keep-btn light" onclick="nextStep()"><span>keep going</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- ═══════ CH 9: THANK YOU ═══════ -->
+<section class="chapter bg-light" data-step="9" id="ch9">
+    <div class="ch-inner">
+        <div class="ch-label" style="color:#131313">chapter 9</div>
+        <h2 class="ch-heading" style="color:#131313">Thank You.</h2>
+        <div class="ch-body" style="color:#131313">
+            <p>Thank you...</p>
+            <p>For listening. For caring. For making ordinary days feel special. For making distance feel smaller. For being patient.</p>
+            <p>For making me smile more than you probably know.</p>
+            <p>And thank you...</p>
+            <p>For unknowingly becoming the safest place I've found.</p>
+        </div>
+        <button class="keep-btn dark" onclick="nextStep()"><span>read the letter</span><span class="arr">&darr;</span></button>
+    </div>
+</section>
+
+<!-- ═══════ THE LETTER ═══════ -->
+<section class="chapter bg-dark" data-step="10" id="chLetter">
+    <div class="ch-inner">
+        <div class="ch-label">the letter</div>
+        <h2 class="ch-heading">Words I've been keeping inside.</h2>
+        <div style="text-align:center;margin-bottom:2vh">
+            <div class="seal" id="sealBtn" onclick="openLetter()">&#9829;</div>
+            <div class="seal-hint" id="sealHint">click the seal to open</div>
+        </div>
+        <div class="letter-card" id="letterCard" style="display:none;opacity:0;transform:translateY(30px);transition:all 1s cubic-bezier(.16,1,.3,1)">
+            <div class="lt-date" id="ltDate"></div>
+            <div class="lt-greet">Dear Shenaz,</div>
+            <div class="lt-body" id="ltBody"></div>
+            <div class="lt-sign" id="ltSign">With all my heart, always yours.</div>
+        </div>
+        <div id="letterNextBtn" style="text-align:center;display:none;margin-top:4vh">
+            <button class="keep-btn light" onclick="nextStep()"><span>there's more</span><span class="arr">&darr;</span></button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ HEART REVEAL ═══════ -->
+<section class="chapter bg-deep" data-step="11" id="chHeart">
+    <div class="ch-inner">
+        <div class="heart-area">
+            <div style="position:relative;display:flex;align-items:center;justify-content:center">
+                <div class="h-ring"></div><div class="h-ring"></div><div class="h-ring"></div>
+                <svg class="big-heart" viewBox="0 0 32 32" onclick="burstHearts()">
+                    <path d="M16 28.5S2 19.5 2 9.5a7.5 7.5 0 0 1 12.86-5.11L16 5.61l1.14-1.22A7.5 7.5 0 0 1 30 9.5c0 10-14 19-14 19z"/>
+                </svg>
+            </div>
+            <div style="font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;opacity:.2;margin-top:3vh;text-align:center">this beats for you</div>
+        </div>
+        <div style="text-align:center">
+            <button class="keep-btn light" onclick="nextStep()"><span>one last thing</span><span class="arr">&darr;</span></button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ PROPOSAL ═══════ -->
+<section class="chapter bg-dark" data-step="12" id="chProposal">
+    <div class="ch-inner proposal-sec">
+        <div class="ch-label">the question</div>
+        <div class="p-question">Will you be<br>my girlfriend?</div>
+        <div class="p-sub">Not just for today. Not just because this page looks pretty. But because every single day with you has made me believe that what we have is worth choosing. Again. And again. And again.</div>
+        <div style="font-size:2.5rem;margin-bottom:3vh">&#10084;&#65039;</div>
+        <div class="p-btns">
+            <button class="p-btn p-yes" onclick="sayYes()">&#10084;&#65039; Yes</button>
+            <button class="p-btn p-think" id="thinkBtn" onclick="letMeThink()">&#129293; Let Me Think</button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ BUCKET LIST (hidden until "yes" or scroll) ═══════ -->
+<section class="chapter bg-dark" data-step="13" id="chBucket">
+    <div class="ch-inner">
+        <div class="ch-label">hidden surprise &mdash; our bucket list</div>
+        <h2 class="ch-heading">Things I want to do with you.</h2>
+        <div class="bucket-grid">
+            <div>
+                <div class="b-item" onclick="togB(this)"><div class="b-chk"></div><div class="b-txt">Our first coffee together</div></div>
+                <div class="b-item" onclick="togB(this)"><div class="b-chk"></div><div class="b-txt">Our first long walk</div></div>
+                <div class="b-item" onclick="togB(this)"><div class="b-chk"></div><div class="b-txt">Watching a sunset together</div></div>
+                <div class="b-item" onclick="togB(this)"><div class="b-chk"></div><div class="b-txt">A spontaneous road trip</div></div>
+            </div>
+            <div>
+                <div class="b-item" onclick="togB(this)"><div class="b-chk"></div><div class="b-txt">Taking countless terrible selfies</div></div>
+                <div class="b-item" onclick="togB(this)"><div class="b-chk"></div><div class="b-txt">Laughing over even more memes</div></div>
+                <div class="b-item" onclick="togB(this)"><div class="b-chk"></div><div class="b-txt">Celebrating our first anniversary</div></div>
+                <div class="b-item" onclick="togB(this)"><div class="b-chk"></div><div class="b-txt">Growing old while still sending each other random reels</div></div>
+            </div>
+        </div>
+        <div class="bucket-outro">Because the best memories... are still waiting for us.</div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="chapter bg-dark open footer" data-step="99" style="max-height:none;opacity:1;pointer-events:auto">
+    <div class="footer-l">mosherhan &bull; 2026</div>
+    <div class="footer-r">&ldquo;IDK Y TF AM TOO ROMANTIC but let it be<br>
+        I wanna make you happy cuz ik you are going through a phase <br>
+        where there myt be some sadness, so yea due deligence ig.&rdquo;</div>
+</footer>
+<!-- Celebration Overlay -->
+<div class="celeb" id="celeb">
+    <div class="celeb-icon">&#10084;&#65039;</div>
+    <div class="celeb-title">You Just Made Me The Happiest Person Alive &#10084;&#65039;</div>
+    <div class="celeb-sub">Today isn't the end of this story. It's only the beginning. Here's to our first official chapter. And to every memory we haven't made yet. I can't wait to create them with you.</div>
+    <div class="celeb-counter">
+        <div class="c-label">our journey begins</div>
+        <div class="c-num" id="dayCount">Day 1</div>
+        <div class="c-unit">of forever</div>
+    </div>
+    <button class="celeb-close" onclick="closeCeleb()">continue exploring</button>
+</div>
+
+<!-- ═══════ SCRIPTS ═══════ -->
+<script>
+/* ──── CURSOR ──── */
+var cG=document.getElementById('cGlow');
+document.addEventListener('mousemove',function(e){cG.style.left=e.clientX+'px';cG.style.top=e.clientY+'px'});
+
+/* ──── LOADER ──── */
+var lv=0,li=setInterval(function(){
+    lv+=Math.random()*10+3;if(lv>100)lv=100;
+    document.getElementById('loadFill').style.width=lv+'%';
+    if(lv>=100){clearInterval(li);setTimeout(function(){
+        document.getElementById('loader').classList.add('done');
+        document.getElementById('nav').classList.add('show');
+    },500)}
+},70);
+
+/* ──── STEP MANAGEMENT ──── */
+var currentStep=0;
+var totalMainSteps=13; // 0-hero through 13-bucket
+var allChapters=document.querySelectorAll('.chapter');
+
+function nextStep(){
+    currentStep++;
+    revealUpTo(currentStep);
+    // unlock scroll so revealed content is scrollable
+    document.body.classList.remove('locked');
+    // scroll to the next main chapter
+    var target=findChapterForStep(currentStep);
+    if(target){
+        setTimeout(function(){
+            target.scrollIntoView({behavior:'smooth',block:'start'});
+        },100);
+    }
+    updateProgress();
+    updateNav();
+}
+
+function revealUpTo(step){
+    allChapters.forEach(function(ch){
+        var s=parseFloat(ch.getAttribute('data-step'));
+        if(s<=step) ch.classList.add('open');
+    });
+}
+
+function findChapterForStep(step){
+    var els=document.querySelectorAll('.chapter[data-step="'+step+'"]');
+    if(els.length)return els[0];
+    // try fractional (marquees)
+    return null;
+}
+
+function updateProgress(){
+    var pct=Math.min((currentStep/12)*100,100);
+    document.getElementById('progBar').style.width=pct+'%';
+}
+
+function updateNav(){
+    var mainStep=Math.min(currentStep,9);
+    if(currentStep<=9){
+        document.getElementById('navChapter').textContent='chapter '+mainStep+' / 9';
+    }else if(currentStep===10){
+        document.getElementById('navChapter').textContent='the letter';
+    }else if(currentStep===11){
+        document.getElementById('navChapter').textContent='the heart';
+    }else if(currentStep>=12){
+        document.getElementById('navChapter').textContent='the question';
+    }
+}
+
+// Also reveal marquees attached to a chapter
+// Marquees have fractional steps like 1.5, 3.5, 6.5
+// They should open when the next integer step opens
+var mqObs=new MutationObserver(function(){});
+// Simple: when a chapter opens, open all chapters with step <= currentStep
+// Already handled by revealUpTo
+
+/* ──── MARQUEES ──── */
+var mp1=0,mp2=0,mp3=0;
+(function mqLoop(){
+    mp1-=.5;mp2+=.65;mp3-=.45;
+    var a=document.getElementById('mq1'),b=document.getElementById('mq2'),c=document.getElementById('mq3');
+    if(a)a.style.transform='translateX('+mp1+'px)';
+    if(b)b.style.transform='translateX('+mp2+'px)';
+    if(c)c.style.transform='translateX('+mp3+'px)';
+    if(Math.abs(mp1)>4000)mp1=0;if(Math.abs(mp2)>4000)mp2=0;if(Math.abs(mp3)>4000)mp3=0;
+    requestAnimationFrame(mqLoop);
+})();
+
+/* ──── LETTER ──── */
+var letterTxt="If someone had told me back in college that one day I\u2019d be writing this for you... I probably wouldn\u2019t have believed them.\n\nBecause back then, we were just two people who never really got the chance to know each other.\n\nLife moved on. But somehow... it brought us back together in the most unexpected way.\n\nWhat started with a simple message slowly became the best part of my day.\n\nYou never tried to impress me. You were simply yourself. And somehow... that was enough. More than enough.\n\nYou\u2019ve shown me kindness when I needed it. You\u2019ve made me laugh on difficult days. You\u2019ve made distance feel less lonely. You\u2019ve become someone I genuinely care about.\n\nNot because of one big moment... but because of hundreds of little moments that slowly became something beautiful.\n\nEvery conversation. Every meme. Every random text. Every \u201Cgood morning.\u201D Every \u201Cgood night.\u201D\n\nWithout even realizing it... you became someone I couldn\u2019t imagine my day without.\n\nI don\u2019t know what tomorrow looks like. I don\u2019t know where life will take us.\n\nBut if there\u2019s one thing I\u2019m sure of...\n\nI\u2019d love to experience that journey with you.\n\nSo... there\u2019s only one thing left to ask.";
+
+var letterOpen=false;
+function openLetter(){
+    if(letterOpen)return;letterOpen=true;
+    var seal=document.getElementById('sealBtn'),hint=document.getElementById('sealHint'),card=document.getElementById('letterCard');
+    seal.style.transform='scale(1.3) rotate(20deg)';seal.style.opacity='0';hint.style.opacity='0';
+    setTimeout(function(){
+        seal.style.display='none';hint.style.display='none';
+        var now=new Date(),months=['january','february','march','april','may','june','july','august','september','october','november','december'];
+        document.getElementById('ltDate').textContent=now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+        card.style.display='block';
+        setTimeout(function(){card.style.opacity='1';card.style.transform='translateY(0)';typeLetter()},50);
+    },500);
+}
+
+function typeLetter(){
+    var el=document.getElementById('ltBody'),sig=document.getElementById('ltSign'),nxt=document.getElementById('letterNextBtn');
+    el.innerHTML='';sig.classList.remove('show');nxt.style.display='none';
+    var i=0,spd=16;
+    (function t(){
+        if(i<letterTxt.length){
+            el.innerHTML+=letterTxt[i]==='\n'?'<br>':letterTxt[i];
+            i++;setTimeout(t,spd);
+        }else{
+            sig.classList.add('show');
+            nxt.style.display='block';
+            burstHearts();
+        }
+    })();
+}
+
+/* ──── PROPOSAL ──── */
+var thinkC=0;
+function letMeThink(){
+    thinkC++;
+    var btn=document.getElementById('thinkBtn');
+    var m=["Take your time \u2764\uFE0F","I'll wait forever","No pressure, but... \uD83D\uDC40","Still here \uD83E\uDD7A","Okay I'm nervous now"];
+    btn.textContent=m[Math.min(thinkC,m.length-1)];
+    btn.style.transform='translateX('+(Math.random()*50-25)+'px) translateY('+(Math.random()*30-15)+'px)';
+    setTimeout(function(){btn.style.transform=''},400);
+}
+
+function sayYes(){
+    // Reveal bucket list
+    revealUpTo(13);
+    // Show celebration
+    document.getElementById('celeb').classList.add('active');
+    startCounter();fireConfetti();burstHearts();
+}
+
+function closeCeleb(){document.getElementById('celeb').classList.remove('active')}
+
+function startCounter(){
+    var el=document.getElementById('dayCount'),start=new Date();
+    function upd(){var d=Math.floor((new Date()-start)/(864e5));el.textContent='Day '+(d+1)}
+    upd();setInterval(upd,60000);
+}
+
+/* ──── CONFETTI ──── */
+function fireConfetti(){
+    var c=document.getElementById('confetti-canvas'),ctx=c.getContext('2d');
+    c.width=innerWidth;c.height=innerHeight;
+    var pcs=[],cols=['#e8e8e8','#ff6b6b','#ffd93d','#6bff8a','#6bb5ff','#ff6bea'];
+    for(var i=0;i<180;i++) pcs.push({x:c.width/2,y:c.height/2,vx:(Math.random()-.5)*16,vy:Math.random()*-16-4,w:Math.random()*10+4,h:Math.random()*6+3,col:cols[~~(Math.random()*cols.length)],rot:Math.random()*360,rv:(Math.random()-.5)*10,g:.14,life:1,dec:Math.random()*.007+.004});
+    (function a(){
+        ctx.clearRect(0,0,c.width,c.height);var alive=false;
+        pcs.forEach(function(p){if(p.life<=0)return;alive=true;p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.rot+=p.rv;p.life-=p.dec;p.vx*=.99;
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.globalAlpha=p.life;ctx.fillStyle=p.col;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore()});
+        if(alive)requestAnimationFrame(a);else ctx.clearRect(0,0,c.width,c.height);
+    })();
+}
+
+/* ──── HEARTS CANVAS ──── */
+var hc=document.getElementById('hearts-canvas'),hx=hc.getContext('2d'),hw,hh,hearts=[];
+function rsz(){hw=hc.width=innerWidth;hh=hc.height=innerHeight}
+addEventListener('resize',rsz);rsz();
+function HH(){this.x=Math.random()*hw;this.y=Math.random()*hh;this.sz=Math.random()*5+2;this.sy=Math.random()*.5+.1;this.sx=(Math.random()-.5)*.2;this.op=Math.random()*.25+.03;this.rot=Math.random()*6.28;this.rv=(Math.random()-.5)*.01}
+HH.prototype.up=function(){this.y-=this.sy;this.x+=this.sx;this.rot+=this.rv;if(this.y<-15){this.y=hh+15;this.x=Math.random()*hw}};
+HH.prototype.dr=function(){hx.save();hx.translate(this.x,this.y);hx.rotate(this.rot);hx.globalAlpha=this.op;hx.fillStyle='#e8e8e8';hx.beginPath();var s=this.sz/10;hx.moveTo(0,0);hx.bezierCurveTo(-5*s,-5*s,-10*s,2*s,0,10*s);hx.bezierCurveTo(10*s,2*s,5*s,-5*s,0,0);hx.fill();hx.restore()};
+for(var i=0;i<18;i++)hearts.push(new HH);
+(function hl(){hx.clearRect(0,0,hw,hh);hearts.forEach(function(h){h.up();h.dr()});requestAnimationFrame(hl)})();
+function burstHearts(){for(var i=0;i<12;i++){var p=new HH;p.x=hw/2+(Math.random()-.5)*400;p.y=hh/2+(Math.random()-.5)*400;p.sy=Math.random()*2+1;p.sz=Math.random()*10+5;hearts.push(p);if(hearts.length>45)hearts.shift()}}
+
+/* ──── BUCKET ──── */
+function togB(el){el.classList.toggle('done');el.querySelector('.b-chk').textContent=el.classList.contains('done')?'✓':''}
+</script>
+</body>
+</html>
